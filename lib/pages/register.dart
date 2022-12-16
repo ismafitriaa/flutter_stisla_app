@@ -102,7 +102,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: MaterialButton(
                         minWidth: double.infinity,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, 
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
+                          },
                         child: Text('Login'),
                         color: Colors.teal,
                         textColor: Colors.white,
@@ -115,7 +119,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: MaterialButton(
                         minWidth: double.infinity,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, 
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          );
+                          },
                         child: Text('Register'),
                         color: Colors.teal,
                         textColor: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stisla_app/pages/login.dart';
 import 'package:flutter_stisla_app/pages/register.dart';
+import 'package:flutter_stisla_app/pages/list.dart';
 
 void main() {
   runApp(const MyApp());
