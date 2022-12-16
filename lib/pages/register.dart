@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stisla_app/pages/register.dart';
+import 'package:flutter_stisla_app/pages/login.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Login Screen'),
+          title: Text('Register Screen'),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Login',
+              'Register',
               style: TextStyle(
                 fontSize: 35,
                 color: Colors.teal,
@@ -35,6 +35,27 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: TextFormField(
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          hintText: 'Enter name',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (String value){
+
+                        },
+                        validator: (value){
+                          return value!.isEmpty ? 'Please enter name' : null;
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: 30,),
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: TextFormField(
