@@ -8,6 +8,7 @@ import 'package:flutter_stisla_app/service/loginservice.dart';
 import 'package:http/http.dart' as http;
 import '../model/category_model.dart';
 import 'model/category_model.dart';
+import 'package:flutter_stisla_app/service/crud_helper.dart';
 
 import '../service/loginservice.dart';
 
@@ -22,6 +23,34 @@ class _ListPageState extends State<ListPage> {
   @override
   List listCategory = [];
   String name = '';
+
+    List<String> user = [];
+  List<Category> categories = [];
+  int selectedIndex = 0;
+  int currentPage = 1;
+  int lastPage = 0;
+  bool isLoading = true;
+  final ScrollController scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+  // getKategori() async {
+  //   final response = await CrudHelper().getKategori();
+  //   var dataResponse = jsonDecode(response.body);
+  //   setState(() {
+  //     var listRespon = dataResponse['data'];
+  //     for(var i=0; i< listRespon.length; i++){
+  //       listCategory.add(Category.fromJson(listRespon[i]));
+  //     }
+  //   });
+  // }
+  fetchData() {
+    CrudHelper.getCategories(currentPage.toString()).then((resultList) {
+      setState(() {
+        categories = resultList[0];
+        lastPage = resultList[1];
+        isLoading = false;
+      });
+    });
+  }
 
   logoutPressed() async {
     http.Response response = await AuthServices.logout();
@@ -47,13 +76,39 @@ class _ListPageState extends State<ListPage> {
     final name = txtAddCategory.text;
     final response = await CRUD().addCategory(name);
     print(response.body);
-    Navigator.pushNamed(context, "/main");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ListPage()),
+    );
+  }
+
+  addMoreData() {
+    CrudHelper.getCategories(currentPage.toString()).then((resultList) {
+      setState(() {
+        categories.addAll(resultList[0]);
+        lastPage = resultList[1];
+        isLoading = false;
+      });
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getKategori();
+    scrollController.addListener(() {
+      if (scrollController.offset ==
+          scrollController.position.maxScrollExtent) {
+        if (currentPage < lastPage) {
+          setState(() {
+            isLoading = true;
+            currentPage++;
+            addMoreData();
+          });
+        }
+      }
+    });
+
+    fetchData();
   }
 
   getKategori() async {
@@ -122,9 +177,10 @@ class _ListPageState extends State<ListPage> {
                 ),
                 Expanded(
                     child: ListView.builder(
-                        itemCount: listCategory.length,
+                        controller: scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: categories.length,
                         itemBuilder: (context, index) {
-                          var kategori = listCategory[index];
                           return Dismissible(
                               key: UniqueKey(),
                               background: Container(
@@ -165,14 +221,17 @@ class _ListPageState extends State<ListPage> {
                                   );
                                 } else {}
                               },
-                              child: ListTile(
-                                  title: Text(
-                                kategori.name,
-                                style: const TextStyle(
-                                    fontFamily: 'Nunito',
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              )));
+                              child: Container(
+                                height: 100,
+                                child: ListTile(
+                                    title: Text(
+                                  categories[index].name,
+                                  style: const TextStyle(
+                                      fontFamily: 'Nunito',
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                )),
+                              ));
   })
              ) ],
                 )
