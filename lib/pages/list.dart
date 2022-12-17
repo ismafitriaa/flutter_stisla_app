@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stisla_app/pages/edit.dart';
-import 'package:flutter_stisla_app/pages/register.dart';
+import 'package:flutter_stisla_app/pages/login.dart';
+import 'package:http/http.dart' as http;
 
-import 'login.dart';
+import '../service/loginservice.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -13,6 +16,25 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   @override
+  logoutPressed() async {
+    http.Response response = await AuthServices.logout();
+
+    if (response.statusCode == 204) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => const LoginPage(),
+        ),
+        (route) => false,
+      );
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const ListPage(),
+          ));
+    }
+  }
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -55,6 +77,7 @@ class _ListPageState extends State<ListPage> {
                       MaterialPageRoute(
                           builder: (context) => const LoginPage()),
                     );
+                    logoutPressed();
                   },
                   child: Text('Logout'),
                   color: Colors.teal,

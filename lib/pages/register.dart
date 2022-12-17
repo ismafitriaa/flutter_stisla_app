@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stisla_app/pages/login.dart';
+
+import '../service/loginservice.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -9,6 +14,32 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final txtName = TextEditingController(text: 'iismaaaaa');
+  final txtEmail = TextEditingController(text: 'iismaaaaa@gmail.com');
+  final txtPassword = TextEditingController(text: 'password');
+
+  registerPressed() async {
+    // if (_email.isNotEmpty && _password.isNotEmpty) {
+      http.Response response =
+          await AuthServices.register(txtName.text, txtEmail.text, txtPassword.text);
+      Map responseMap = jsonDecode(response.body);
+      print(response.body);
+      if (response.statusCode == 200) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const LoginPage(),
+          ),
+          (route) => false,
+        );
+    //   } else {
+    //     errorSnackBar(context, 'wrong email or password');
+    //   }
+    // } else {
+    //   errorSnackBar(context, 'enter all required fields');
+    // }
+  }
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,6 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: TextFormField(
+                        controller: txtName,
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
                           labelText: 'Name',
@@ -59,6 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: TextFormField(
+                        controller: txtEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
@@ -80,6 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       child: TextFormField(
+                        controller: txtPassword,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -123,6 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Navigator.push(context, 
                           MaterialPageRoute(builder: (context) => const LoginPage()),
                           );
+                          registerPressed();
                           },
                         child: Text('Register'),
                         color: Colors.teal,

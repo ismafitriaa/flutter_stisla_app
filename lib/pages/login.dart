@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stisla_app/pages/list.dart';
 import 'package:flutter_stisla_app/pages/register.dart';
+import 'package:http/http.dart' as http;
+
+import '../service/loginservice.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,6 +15,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final txtEmail = TextEditingController(text: 'superadmin@gmail.com');
+  final txtPassword = TextEditingController(text: 'password');
+  
+  LoginPressed() async {
+    // if (txtEmail.isNotEmpty && txtPassword.isNotEmpty) {
+      http.Response response = await AuthServices.login(txtEmail.text, txtPassword.text);
+      Map responseMap = jsonDecode(response.body);
+      print(response.body);
+      if (response.statusCode == 200) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => ListPage(),
+          ),
+          (route) => false,
+        );
+    //   } else {
+    //     errorSnackBar(context, 'wrong email or password');
+    //   }
+    // } else {
+    //   errorSnackBar(context, 'enter all required fields');
+    // }
+  }
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: txtEmail,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -59,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 30,),
                     
                     TextFormField(
+                       controller: txtPassword,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                         labelText: 'Password',
@@ -83,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(context, 
                           MaterialPageRoute(builder: (context) => const ListPage()),
                           );
+                          LoginPressed();
                           },
                         child: Text('Login'),
                         color: Colors.teal,
